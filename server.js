@@ -28,19 +28,19 @@ app.use(express.static(path.join(__dirname, 'public')));
   * Routes
   */
 const routes = [
-  { path: '/', view: 'home', title: 'Home' },
-  { path: '/organizations', view: 'organizations', title: 'Organizations' },
-  { path: '/projects', view: 'projects', title: 'Service Projects' },
-  { path: '/categories', view: 'categories', title: 'Categories' }
+    { path: '/', view: 'home', title: 'Home' },
+    { path: '/organizations', view: 'organizations', title: 'Organizations' },
+    { path: '/projects', view: 'projects', title: 'Service Projects' },
+    { path: '/categories', view: 'categories', title: 'Categories' }
 ];
 
 routes.forEach((route) => {
-  app.get(route.path, (req, res) => {
-    res.render(route.view, { pageTitle: route.title });
-  });
+    app.get(route.path, (req, res) => {
+        res.render(route.view, { pageTitle: route.title });
+    });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running at http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${NODE_ENV}`);
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
 });
