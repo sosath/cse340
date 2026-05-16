@@ -17,25 +17,30 @@ const app = express();
   * Configure Express middleware
   */
 
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'src/views'));
+
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
   * Routes
   */
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/home.html'));
-});
+const routes = [
+  { path: '/', view: 'home', title: 'Home' },
+  { path: '/organizations', view: 'organizations', title: 'Organizations' },
+  { path: '/projects', view: 'projects', title: 'Service Projects' },
+  { path: '/categories', view: 'categories', title: 'Categories' }
+];
 
-app.get('/organizations', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/organizations.html'));
-});
-
-app.get('/projects', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/projects.html'));
+routes.forEach((route) => {
+  app.get(route.path, (req, res) => {
+    res.render(route.view, { pageTitle: route.title });
+  });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running at http://127.0.0.1:${PORT}`);
-    console.log(`Environment: ${NODE_ENV}`);
+  console.log(`Server is running at http://127.0.0.1:${PORT}`);
+  console.log(`Environment: ${NODE_ENV}`);
 });
