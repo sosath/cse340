@@ -4,6 +4,7 @@ import path from 'path';
 import { testConnection } from './src/models/db.js';
 import { getAllOrganizations } from './src/models/organizations.js';
 import { getAllProjects } from './src/models/projects.js';
+import { getAllCategories } from './src/models/categories.js';
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -32,7 +33,6 @@ app.use(express.static(path.join(__dirname, 'public')));
   */
 const routes = [
     { path: '/', view: 'home', title: 'Home' },
-    { path: '/categories', view: 'categories', title: 'Categories' }
 ];
 
 routes.forEach((route) => {
@@ -53,6 +53,13 @@ app.get('/projects', async (req, res) => {
     const title = 'Service Projects';
 
     res.render('projects', { title, projects, pageTitle: title });
+});
+
+app.get('/categories', async (req, res) => {
+    const categories = await getAllCategories();
+    const title = 'Service Project Categories';
+
+    res.render('categories', { title, categories, pageTitle: title });
 });
 
 app.listen(PORT, async () => {

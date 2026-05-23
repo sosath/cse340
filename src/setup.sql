@@ -61,3 +61,59 @@ INSERT INTO public.project (organization_id, title, description, location, date)
 (3, 'Clothing Drive Sorting', 'Organizing and boxing donated winter clothes for distribution.', 'UnityServe Distribution Warehouse', '2026-08-14'),
 (3, 'After-School Tutoring Camp', 'Providing math and reading support for underprivileged children.', 'Youth Recreation Center', '2026-09-20'),
 (3, 'Neighborhood Clean-up Rally', 'Collecting litter and cleaning graffiti from public squares.', 'East Gate Market District', '2026-10-10');
+
+-- ==========================================
+-- Create Categories and Junction Tables
+-- ==========================================
+
+-- 1. Create Category Table
+CREATE TABLE IF NOT EXISTS public.category (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- 2. Create Junction Table for Many-to-Many relationship
+CREATE TABLE IF NOT EXISTS public.project_category (
+    project_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    PRIMARY KEY (project_id, category_id),
+    CONSTRAINT fk_project
+        FOREIGN KEY(project_id) 
+        REFERENCES public.project(project_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_category
+        FOREIGN KEY(category_id) 
+        REFERENCES public.category(category_id)
+        ON DELETE CASCADE
+);
+
+-- ==========================================
+-- Insert Sample Categories (At least 3)
+-- ==========================================
+INSERT INTO public.category (name) VALUES
+('Infrastructure & Renovation'),
+('Environment & Agriculture'),
+('Education & Community Support')
+ON CONFLICT (name) DO NOTHING;
+
+-- ==========================================
+-- Associate Existing 15 Projects with Categories
+-- ==========================================
+
+-- Organization 1 Projects (IDs 1-5) -> Infrastructure & Renovation (Category 1)
+INSERT INTO public.project_category (project_id, category_id) VALUES
+(1, 1), (2, 1), (3, 1), (4, 1), (5, 1);
+
+-- Organization 2 Projects (IDs 6-10) -> Environment & Agriculture (Category 2)
+INSERT INTO public.project_category (project_id, category_id) VALUES
+(6, 2), (7, 2), (8, 2), (9, 2), (10, 2);
+
+-- Organization 3 Projects (IDs 11-15) -> Education & Community Support (Category 3)
+INSERT INTO public.project_category (project_id, category_id) VALUES
+(11, 3), (12, 3), (13, 3), (14, 3), (15, 3);
+
+-- Adding a few multi-category associations to satisfy "Many-to-Many" specification
+INSERT INTO public.project_category (project_id, category_id) VALUES
+(4, 3),  -- Library Shelving Update also counts as Education
+(7, 1),  -- Composting Workshop Setup also involves Infrastructure (building bins)
+(14, 1); -- After-School Tutoring Camp also linked to Community Support space
