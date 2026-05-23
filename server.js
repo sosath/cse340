@@ -2,6 +2,7 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { testConnection } from './src/models/db.js';
+import { getAllOrganizations } from './src/models/organizations.js';
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -30,7 +31,6 @@ app.use(express.static(path.join(__dirname, 'public')));
   */
 const routes = [
     { path: '/', view: 'home', title: 'Home' },
-    { path: '/organizations', view: 'organizations', title: 'Organizations' },
     { path: '/projects', view: 'projects', title: 'Service Projects' },
     { path: '/categories', view: 'categories', title: 'Categories' }
 ];
@@ -39,6 +39,13 @@ routes.forEach((route) => {
     app.get(route.path, (req, res) => {
         res.render(route.view, { pageTitle: route.title });
     });
+});
+
+app.get('/organizations', async (req, res) => {
+    const organizations = await getAllOrganizations();
+    const title = 'Our Partner Organizations';
+
+    res.render('organizations', { title, organizations, pageTitle: title });
 });
 
 app.listen(PORT, async () => {
