@@ -12,14 +12,21 @@
                         <%= new Date(project.date).toLocaleDateString('en-US', { month: 'short' , day: 'numeric' ,
                             year: 'numeric' , timeZone: 'UTC' }) %>:
                     </strong>
-                    <%= project.title %>
-                        (<em>
+
+                    <a href="/project/<%= project.project_id %>">
+                        <%= project.title %>
+                    </a>
+
+                    (<em>
+                        <a href="/organization/<%= project.organization_id %>">
                             <%= project.organization_name %>
-                        </em>)
-                        <br>
-                        <small>
-                            <%= project.description %> — 📍 <%= project.location %>
-                        </small>
+                        </a>
+                    </em>)
+
+                    <br>
+                    <small>
+                        <%= project.description %> — 📍 <%= project.location %>
+                    </small>
                 </li>
                 <% }); %>
         </ul>
