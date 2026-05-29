@@ -2,9 +2,7 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { testConnection } from './src/models/db.js';
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllProjects } from './src/models/projects.js';
-import { getAllCategories } from './src/models/categories.js';
+import router from './src/routes.js'; // <-- Importamos el nuevo enrutador centralizado
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -21,12 +19,14 @@ const app = express();
   * Configure Express middleware
   */
 
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src/views'));
-
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Set EJS as the templating engine
+app.set('view engine', 'ejs');
+
+// Tell Express where to find your templates
+app.set('views', path.join(__dirname, 'src/views'));
 
 // Middleware to log all incoming requests
 app.use((req, res, next) => {
@@ -42,46 +42,9 @@ app.use((req, res, next) => {
     next();
 });
 
-/**
-  * Routes
-  */
-const routes = [
-    { path: '/', view: 'home', title: 'Home' },
-];
-
-routes.forEach((route) => {
-    app.get(route.path, (req, res) => {
-        res.render(route.view, { pageTitle: route.title });
-    });
-});
-
-app.get('/organizations', async (req, res) => {
-    const organizations = await getAllOrganizations();
-    const title = 'Our Partner Organizations';
-
-    res.render('organizations', { title, organizations, pageTitle: title });
-});
-
-app.get('/projects', async (req, res) => {
-    const projects = await getAllProjects();
-    const title = 'Service Projects';
-
-    res.render('projects', { title, projects, pageTitle: title });
-});
-
-app.get('/categories', async (req, res) => {
-    const categories = await getAllCategories();
-    const title = 'Service Project Categories';
-
-    res.render('categories', { title, categories, pageTitle: title });
-});
-
-// Test route for 500 errors
-app.get('/test-error', (req, res, next) => {
-    const err = new Error('This is a test error');
-    err.status = 500;
-    next(err);
-});
+// El orden importa: Usamos el enrutador justo antes del Catch-all
+// Use the imported router to handle routes
+app.use(router);
 
 // Catch-all route for 404 errors
 app.use((req, res, next) => {
@@ -100,7 +63,7 @@ app.use((err, req, res, next) => {
     const status = err.status || 500;
     const template = status === 404 ? '404' : '500';
 
-    // Prepare data for the template
+    // Prepare data for the template (Mantenemos tu corrección de pageTitle)
     const context = {
         title: status === 404 ? 'Page Not Found' : 'Server Error',
         pageTitle: status === 404 ? 'Page Not Found' : 'Server Error',
