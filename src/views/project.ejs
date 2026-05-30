@@ -24,5 +24,18 @@
         <p><strong>Description:</strong>
             <%= projectDetails.description %>
         </p>
+
+        <p><strong>Categories:</strong>
+            <% if (categories.length> 0) { %>
+                <% categories.forEach(category=> { %>
+                    <a href="/category/<%= category.category_id %>">
+                        <%= category.name %>
+                    </a>
+                    <% if (categories.indexOf(category) < categories.length - 1) { %>,<% } %>
+                            <% }); %>
+                                <% } else { %>
+                                    No categories assigned
+                                    <% } %>
+        </p>
     </main>
     <%- include('partials/footer') %>
