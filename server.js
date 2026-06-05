@@ -19,6 +19,10 @@ const app = express();
   * Configure Express middleware
   */
 
+// Allow Express to receive and process common POST data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -42,7 +46,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// El orden importa: Usamos el enrutador justo antes del Catch-all
 // Use the imported router to handle routes
 app.use(router);
 
