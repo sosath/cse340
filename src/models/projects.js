@@ -119,5 +119,28 @@ const createProject = async (title, description, location, date, organizationId)
   return result.rows[0].project_id;
 };
 
+const updateProject = async (projectId, title, description, location, date, organizationId) => {
+  const query = `
+      UPDATE public.project
+      SET title = $1, description = $2, location = $3, date = $4, organization_id = $5
+      WHERE project_id = $6;
+  `;
+
+  const queryParams = [title, description, location, date, organizationId, projectId];
+  const result = await db.query(query, queryParams);
+
+  if (result.rowCount === 0) {
+    throw new Error('Project not found or failed to update');
+  }
+};
+
 // Export the model functions
-export { getAllProjects, getProjectsByOrganizationId, getUpcomingProjects, getProjectDetails, getCategoriesForProject, createProject };
+export {
+  getAllProjects,
+  getProjectsByOrganizationId,
+  getUpcomingProjects,
+  getProjectDetails,
+  getCategoriesForProject,
+  createProject,
+  updateProject
+};

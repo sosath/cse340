@@ -38,11 +38,18 @@
                                     <% } %>
         </p>
 
-        <p style="margin-top: 2rem;">
-            <a href="/assign-categories/<%= projectDetails.project_id %>" class="btn-link">
-                Edit Categories
-            </a>
-        </p>
+        <div style="margin-top: 2rem; display: flex; gap: 1.5rem;">
+            <p style="margin: 0;">
+                <a href="/edit-project/<%= projectDetails.project_id %>" class="btn-link">
+                    Edit Project Details
+                </a>
+            </p>
+            <p style="margin: 0;">
+                <a href="/assign-categories/<%= projectDetails.project_id %>" class="btn-link">
+                    Edit Categories
+                </a>
+            </p>
+        </div>
 
     </main>
     <%- include('partials/footer') %>
