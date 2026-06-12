@@ -117,3 +117,25 @@ INSERT INTO public.project_category (project_id, category_id) VALUES
 (4, 3),  -- Library Shelving Update also counts as Education
 (7, 1),  -- Composting Workshop Setup also involves Infrastructure (building bins)
 (14, 1); -- After-School Tutoring Camp also linked to Community Support space
+
+-- Create roles table
+CREATE TABLE public.roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL,
+    role_description TEXT
+);
+
+-- Seed data for roles
+INSERT INTO public.roles (role_name, role_description) VALUES 
+    ('user', 'Standard user with basic access'),
+    ('admin', 'Administrator with full system access');
+
+-- Create users table
+CREATE TABLE public.users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER REFERENCES public.roles(role_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
