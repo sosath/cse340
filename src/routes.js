@@ -4,7 +4,7 @@ import { showOrganizationsPage, showOrganizationDetailsPage, showNewOrganization
 import { showProjectsPage, showProjectDetailsPage, showNewProjectForm, processNewProjectForm, showEditProjectForm, processEditProjectForm, projectValidation } from './controllers/projects.js';
 import { showCategoriesPage, showCategoryDetailsPage, showAssignCategoriesForm, processAssignCategoriesForm, showNewCategoryForm, processNewCategoryForm, showEditCategoryForm, processEditCategoryForm, categoryValidation } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
-import { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout } from './controllers/users.js';
+import { showUserRegistrationForm, processUserRegistrationForm, showLoginForm, processLoginForm, processLogout, requireLogin, showDashboard } from './controllers/users.js';
 
 const router = express.Router();
 
@@ -57,6 +57,9 @@ router.post('/register', processUserRegistrationForm);
 router.get('/login', showLoginForm);
 router.post('/login', processLoginForm);
 router.get('/logout', processLogout);
+
+// Protected dashboard route
+router.get('/dashboard', requireLogin, showDashboard);
 
 // Route for details pages
 router.get('/organization/:id', showOrganizationDetailsPage);
