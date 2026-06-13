@@ -3,10 +3,6 @@ import bcrypt from 'bcrypt';
 
 /**
  * Inserta un nuevo usuario en la base de datos asignándole el rol predeterminado 'user'.
- * @param {string} name - Nombre completo del usuario
- * @param {string} email - Correo electrónico (servirá como username)
- * @param {string} passwordHash - Contraseña ya triturada con bcrypt
- * @returns {Promise<number>} El ID del usuario creado
  */
 const createUser = async (name, email, passwordHash) => {
     const default_role = 'user';
@@ -34,8 +30,6 @@ const createUser = async (name, email, passwordHash) => {
 /**
  * Busca un usuario en la base de datos a través de su correo electrónico,
  * incluyendo el nombre de su rol mediante un JOIN con la tabla roles.
- * @param {string} email - Correo electrónico a buscar.
- * @returns {Promise<Object|null>} El objeto del usuario con su role_name, o null si no existe.
  */
 const findUserByEmail = async (email) => {
     const query = `
@@ -56,10 +50,22 @@ const findUserByEmail = async (email) => {
 };
 
 /**
+ * Obtiene todos los usuarios registrados en el sistema ordenados por nombre.
+ * @returns {Promise<Array>} Lista de usuarios con id, nombre, email y nombre de rol.
+ */
+const getAllUsers = async () => {
+    const query = `
+        SELECT u.user_id, u.name, u.email, r.role_name 
+        FROM public.users u
+        JOIN public.roles r ON u.role_id = r.role_id
+        ORDER BY u.name ASC
+    `;
+    const result = await db.query(query);
+    return result.rows;
+};
+
+/**
  * Compara una contraseña en texto plano con el hash seguro almacenado en la base de datos.
- * @param {string} password - Contraseña ingresada en el formulario de login.
- * @param {string} passwordHash - Hash seguro de la base de datos.
- * @returns {Promise<boolean>} True si coinciden, false si no.
  */
 const verifyPassword = async (password, passwordHash) => {
     return bcrypt.compare(password, passwordHash);
@@ -67,9 +73,6 @@ const verifyPassword = async (password, passwordHash) => {
 
 /**
  * Autentica a un usuario verificando sus credenciales.
- * @param {string} email 
- * @param {string} password 
- * @returns {Promise<Object|null>} El objeto del usuario sin el hash de la contraseña, o null si falla.
  */
 const authenticateUser = async (email, password) => {
     const user = await findUserByEmail(email);
@@ -87,4 +90,4 @@ const authenticateUser = async (email, password) => {
     return user;
 };
 
-export { createUser, authenticateUser };
+export { createUser, authenticateUser, getAllUsers };
