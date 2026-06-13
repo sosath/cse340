@@ -32,15 +32,17 @@ const createUser = async (name, email, passwordHash) => {
 };
 
 /**
- * Busca un usuario en la base de datos a través de su correo electrónico.
+ * Busca un usuario en la base de datos a través de su correo electrónico,
+ * incluyendo el nombre de su rol mediante un JOIN con la tabla roles.
  * @param {string} email - Correo electrónico a buscar.
- * @returns {Promise<Object|null>} El objeto del usuario si existe, o null si no se encuentra.
+ * @returns {Promise<Object|null>} El objeto del usuario con su role_name, o null si no existe.
  */
 const findUserByEmail = async (email) => {
     const query = `
-        SELECT user_id, name, email, password_hash, role_id 
-        FROM public.users 
-        WHERE email = $1
+        SELECT u.user_id, u.name, u.email, u.password_hash, r.role_name 
+        FROM public.users u
+        JOIN public.roles r ON u.role_id = r.role_id
+        WHERE u.email = $1
     `;
     const queryParams = [email];
 
