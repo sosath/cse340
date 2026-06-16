@@ -9,7 +9,8 @@
         </h2>
 
         <p><strong>Date:</strong>
-            <%= projectDetails.date %>
+            <%= new Date(projectDetails.date).toLocaleDateString('en-US', { year: 'numeric' , month: 'long' ,
+                day: 'numeric' , timeZone: 'UTC' }) %>
         </p>
         <p><strong>Location:</strong>
             <%= projectDetails.location %>
@@ -37,19 +38,45 @@
                                     No categories assigned
                                     <% } %>
         </p>
-        <% if (user && user.role_name==='admin' ) { %>
-            <div style="margin-top: 2rem; display: flex; gap: 1.5rem;">
-                <p style="margin: 0;">
-                    <a href="/edit-project/<%= projectDetails.project_id %>" class="btn-link">
-                        Edit Project Details
-                    </a>
-                </p>
-                <p style="margin: 0;">
-                    <a href="/assign-categories/<%= projectDetails.project_id %>" class="btn-link">
-                        Edit Categories
-                    </a>
-                </p>
+
+        <% if (user) { %>
+            <div
+                style="margin: 2rem 0; padding: 1.5rem; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9;">
+                <h3>Project Volunteering</h3>
+                <% if (isVolunteering) { %>
+                    <p style="color: green; font-weight: bold;">You are volunteering for this project!</p>
+                    <form action="/project/<%= projectDetails.project_id %>/unvolunteer" method="POST"
+                        style="margin: 0;">
+                        <button type="submit" class="btn-link"
+                            style="background: none; border: none; padding: 0; color: #d9534f; text-decoration: underline; cursor: pointer; font-size: 1rem;">
+                            Remove myself as a volunteer
+                        </button>
+                    </form>
+                    <% } else { %>
+                        <p>Interested in supporting this cause? Sign up today to participate as an active helper.</p>
+                        <form action="/project/<%= projectDetails.project_id %>/volunteer" method="POST"
+                            style="margin: 0;">
+                            <button type="submit" class="btn-link" style="padding: 0.5rem 1rem; cursor: pointer;">
+                                Volunteer for this Project
+                            </button>
+                        </form>
+                        <% } %>
             </div>
             <% } %>
+
+                <% if (user && user.role_name==='admin' ) { %>
+                    <div style="margin-top: 2rem; display: flex; gap: 1.5rem;">
+                        <p style="margin: 0;">
+                            <a href="/edit-project/<%= projectDetails.project_id %>" class="btn-link">
+                                Edit Project Details
+                            </a>
+                        </p>
+                        <p style="margin: 0;">
+                            <a href="/assign-categories/<%= projectDetails.project_id %>" class="btn-link">
+                                Edit Categories
+                            </a>
+                        </p>
+                    </div>
+                    <% } %>
     </main>
     <%- include('partials/footer') %>

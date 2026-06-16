@@ -1,28 +1,59 @@
 <%- include('partials/header') %>
-
     <main>
         <h1>
             <%= title %>
         </h1>
 
-        <h2>Dashboard</h2>
-        <div class="dashboard-info">
+        <h2>Welcome back, <%= name %>!</h2>
+
+        <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 4px;">
+            <h3>Profile Information</h3>
             <p><strong>Name:</strong>
                 <%= name %>
             </p>
-            <p><strong>Username:</strong>
+            <p><strong>Email:</strong>
                 <%= email %>
             </p>
         </div>
 
-        <% if (user && user.role_name==='admin' ) { %>
-            <div class="admin-controls"
-                style="margin-top: 2rem; padding: 1rem; border: 1px dashed #ccc; background-color: #f9f9f9;">
-                <h3>Administrative Tools</h3>
-                <p><a href="/users" class="btn-link" style="font-weight: bold; color: #0066cc;">Manage Users (View
-                        Registered List)</a></p>
-            </div>
-            <% } %>
+        <div style="margin-top: 2rem; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 4px;">
+            <h3>Your Volunteered Projects</h3>
+            <% if (volunteeredProjects && volunteeredProjects.length> 0) { %>
+                <ul style="list-style: none; padding: 0;">
+                    <% volunteeredProjects.forEach(project=> { %>
+                        <li
+                            style="padding: 1rem 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0;">
+                                    <a href="/project/<%= project.project_id %>">
+                                        <%= project.title %>
+                                    </a>
+                                </h4>
+                                <small style="color: #666;">
+                                    <strong>Org:</strong>
+                                    <%= project.organization_name %> |
+                                        <strong>Date:</strong>
+                                        <%= project.date %> |
+                                            <strong>Location:</strong>
+                                            <%= project.location %>
+                                </small>
+                            </div>
+                            <div>
+                                <form action="/project/<%= project.project_id %>/unvolunteer?source=dashboard"
+                                    method="POST" style="margin: 0;">
+                                    <button type="submit"
+                                        style="background-color: #d9534f; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer;">
+                                        Cancel Spot
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                        <% }); %>
+                </ul>
+                <% } else { %>
+                    <p>You haven't signed up for any service projects yet. Explore the <a href="/projects">projects
+                            catalog</a> to volunteer!</p>
+                    <% } %>
+        </div>
     </main>
-
     <%- include('partials/footer') %>
